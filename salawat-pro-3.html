@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>تسبیح‌دان</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Vazirmatn:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07090f;--surface:#0e1119;--panel:#131824;--panel2:#192030;
+  --border:rgba(180,150,80,0.12);--gold:#c9a84c;--gold2:#e8d08a;--gold3:#8a6020;
+  --goldglow:rgba(201,168,76,0.25);--green:#1e7a4a;--green2:#28a864;
+  --text:#f0e6c8;--text2:#a09070;--text3:#50453a;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --accent:#c9a84c;--accent2:#e8d08a;--accent3:#8a6020;--accentglow:rgba(201,168,76,0.25);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Vazirmatn',sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+body{display:flex;flex-direction:column;min-height:100dvh;transition:background .4s,color .4s}
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-layer::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 100% 60% at 50% -10%,rgba(var(--glow-rgb),.07) 0%,transparent 70%),
+  radial-gradient(ellipse 60% 40% at 80% 80%,rgba(30,122,74,.04) 0%,transparent 60%)}
+.star{position:absolute;border-radius:50%;background:var(--accent2);animation:tw var(--d) var(--dl) infinite both}
+@keyframes tw{0%,100%{opacity:0}50%{opacity:var(--op)}}
+
+/* TOP NAV */
+.top-nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface)}
+.hamburger{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all .2s;flex-shrink:0}
+.hamburger:active{background:var(--panel2);transform:scale(.92)}
+.ham-line{width:18px;height:2px;background:var(--accent);border-radius:2px}
+.app-name{font-family:'Amiri',serif;font-size:20px;color:var(--accent);text-shadow:0 0 20px var(--accentglow)}
+.nav-right{width:38px}
+
+/* DRAWER */
+.drawer-overlay{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:0;transition:opacity .3s}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer-bg{position:absolute;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px)}
+.drawer{position:absolute;right:0;top:0;bottom:0;width:78%;max-width:300px;background:var(--surface);border-left:1px solid var(--border);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.drawer-overlay.open .drawer{transform:translateX(0)}
+.drawer-header{padding:20px 20px 14px;border-bottom:1px solid var(--border)}
+.drawer-logo{font-family:'Amiri',serif;font-size:22px;color:var(--accent)}
+.drawer-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.drawer-body{flex:1;overflow-y:auto;padding:10px 0}
+.drawer-body::-webkit-scrollbar{display:none}
+.drawer-item{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;transition:background .15s}
+.drawer-item:active{background:var(--panel)}
+.drawer-item.active-page{background:rgba(var(--glow-rgb),.07);border-right:3px solid var(--accent)}
+.di-icon{font-size:20px;width:28px;text-align:center}
+.di-text{font-size:14px;color:var(--text)}
+.di-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.drawer-sep{height:1px;background:var(--border);margin:6px 16px}
+.drawer-footer{padding:16px 20px;border-top:1px solid var(--border)}
+.drawer-footer-txt{font-size:10px;color:var(--text3);text-align:center;line-height:1.8}
+
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative;z-index:1}
+.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;-webkit-overflow-scrolling:touch}
+.page.active{display:flex}
+.page::-webkit-scrollbar{display:none}
+
+/* COUNTER PAGE */
+#page-counter{align-items:center;padding-bottom:calc(24px + var(--safe-bottom))}
+.zekr-selector{width:100%;padding:10px 16px 6px;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}
+.zekr-selector::-webkit-scrollbar{display:none}
+.zekr-chip{flex-shrink:0;padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--panel);font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Amiri',serif}
+.zekr-chip.active{background:rgba(var(--glow-rgb),.15);border-color:var(--accent);color:var(--accent2)}
+.zekr-display{padding:6px 20px 2px;text-align:center}
+.zekr-arabic{font-family:'Amiri',serif;font-size:20px;color:var(--accent);line-height:1.7;text-shadow:0 0 30px var(--accentglow)}
+.zekr-persian{font-size:11px;color:var(--text2);margin-top:1px}
+.ornament{display:flex;align-items:center;gap:8px;padding:0 20px;margin:4px 0}
+.ornament-line{flex:1;height:1px;background:linear-gradient(to var(--dir,right),transparent,rgba(var(--glow-rgb),.2))}
+.ornament-diamond{width:5px;height:5px;background:var(--accent3);transform:rotate(45deg)}
+
+/* RING */
+.ring-area{position:relative;width:100%;display:flex;justify-content:center;padding:10px 0 6px}
+.ring-wrap{position:relative;width:220px;height:220px}
+.ring-svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:rgba(var(--glow-rgb),.08);stroke-width:6}
+.ring-glow{fill:none;stroke:var(--accent3);stroke-width:10;stroke-linecap:round;stroke-dasharray:659;stroke-dashoffset:659;opacity:.4;transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1)}
+.ring-main{fill:none;stroke:url(#rg);stroke-width:5;stroke-linecap:round;stroke-dasharray:659;stroke-dashoffset:659;transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 8px var(--accentglow))}
+.tap-btn{position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle at 38% 32%,var(--panel2),var(--bg));border:1px solid rgba(var(--glow-rgb),.18);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:2px;transition:transform .12s,box-shadow .2s;box-shadow:0 12px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05)}
+.tap-btn:active{transform:scale(.94);box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 50px var(--accentglow)}
+.tap-num{font-family:'Amiri',serif;font-size:66px;line-height:1;color:var(--accent2);text-shadow:0 0 40px var(--accentglow);font-weight:700}
+.tap-hint{font-size:10px;color:var(--text3);letter-spacing:.1em}
+.tap-round{font-size:10px;color:var(--text2);position:absolute;bottom:26px}
+.tap-goalname{font-size:10px;color:var(--accent3);position:absolute;top:26px}
+
+/* PROGRESS */
+.progress-bar-wrap{width:100%;padding:0 20px 2px}
+.progress-bar-bg{height:4px;background:rgba(var(--glow-rgb),.1);border-radius:2px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px var(--accent)}
+.progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px}
+
+/* STATS STRIP — 3 items (no جلسه) */
+.stats-strip{display:flex;width:100%;padding:0 16px;gap:7px;margin-top:6px}
+.stat-box{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;gap:1px}
+.stat-v{font-size:18px;font-weight:700;color:var(--accent2);font-family:'Amiri',serif}
+.stat-l{font-size:9px;color:var(--text3)}
+
+/* GOAL SELECTOR */
+.goal-row-wrap{width:100%;padding:8px 16px 0}
+.goal-row-label{font-size:11px;color:var(--text2);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.goal-add-btn{font-size:11px;color:var(--accent);cursor:pointer;padding:2px 8px;border:1px solid var(--border);border-radius:10px;background:var(--panel);transition:all .2s}
+.goal-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.goal-chips::-webkit-scrollbar{display:none}
+.g-chip{flex-shrink:0;padding:7px 13px;border-radius:14px;border:1px solid var(--border);background:var(--panel);font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:1px}
+.g-chip.active{border-color:var(--accent);color:var(--accent2);background:rgba(var(--glow-rgb),.1)}
+.g-chip-name{font-size:10px;color:inherit;font-weight:600}
+.g-chip-num{font-family:'Amiri',serif;font-size:13px}
+
+/* ACTION BTNS */
+.btn-row{display:flex;gap:7px;width:100%;padding:8px 16px 0}
+.ctrl-btn{flex:1;padding:11px 6px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:var(--text2);font-size:11px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.ctrl-btn:active{background:var(--panel2);color:var(--accent2)}
+.ctrl-btn.danger:active{background:rgba(180,50,50,.15);border-color:rgba(180,50,50,.3);color:#e06060}
+
+/* STATS PAGE */
+.stats-page{padding:16px}
+.section-title{font-size:12px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:3px}
+.sc-val{font-size:26px;font-family:'Amiri',serif;font-weight:700;color:var(--accent2)}
+.sc-label{font-size:11px;color:var(--text2)}.sc-sub{font-size:10px;color:var(--text3)}
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:80px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar-fill{width:100%;background:linear-gradient(to top,var(--accent3),var(--accent));border-radius:3px 3px 0 0;min-height:2px;position:relative;transition:height .5s ease}
+.bar-fill.today{background:linear-gradient(to top,var(--green),var(--green2));box-shadow:0 0 8px rgba(40,168,100,.4)}
+.bar-lbl{font-size:8px;color:var(--text3)}
+.bar-val{font-size:9px;color:var(--text2);position:absolute;top:-15px;left:50%;transform:translateX(-50%);white-space:nowrap}
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:8px}
+.hm-cell{aspect-ratio:1;border-radius:3px;background:var(--panel2)}
+.hm-cell.lv1{background:rgba(var(--glow-rgb),.15)}.hm-cell.lv2{background:rgba(var(--glow-rgb),.35)}
+.hm-cell.lv3{background:rgba(var(--glow-rgb),.6)}.hm-cell.lv4{background:var(--accent);box-shadow:0 0 6px var(--accentglow)}
+.streak-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.streak-num{font-size:30px;font-family:'Amiri',serif;font-weight:700;color:var(--accent2)}
+.streak-label{font-size:11px;color:var(--text2);margin-top:2px}.streak-flame{font-size:34px}
+
+/* ZEKRS PAGE */
+.zekrs-page{padding:14px}
+.zekr-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.zekr-card:active{background:var(--panel2)}
+.zekr-card.selected{border-color:var(--accent);background:rgba(var(--glow-rgb),.06)}
+.zc-arabic{font-family:'Amiri',serif;font-size:19px;color:var(--accent);line-height:1.8}
+.zc-name{font-size:13px;color:var(--text);margin-top:5px;font-weight:500}
+.zc-meaning{font-size:11px;color:var(--text2);margin-top:2px}
+.zc-virtue{font-size:10px;color:var(--text3);margin-top:5px;line-height:1.6;border-top:1px solid var(--border);padding-top:5px}
+.zc-badge{display:inline-block;padding:2px 8px;border-radius:8px;background:rgba(var(--glow-rgb),.1);border:1px solid rgba(var(--glow-rgb),.2);font-size:9px;color:var(--accent);margin-top:5px}
+.add-custom-card{border:1px dashed var(--border);border-radius:14px;padding:14px;text-align:center;color:var(--text2);cursor:pointer;transition:all .2s;font-size:13px;margin-bottom:8px}
+.add-custom-card:active{background:var(--panel)}
+
+/* SETTINGS PAGE */
+.settings-page{padding:14px}
+.setting-group{margin-bottom:18px}
+.setting-group-title{font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;padding-right:4px}
+.setting-row{background:var(--panel);border:1px solid var(--border);padding:13px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s}
+.setting-row:first-of-type{border-radius:14px 14px 0 0}.setting-row:last-of-type{border-radius:0 0 14px 14px}.setting-row:only-of-type{border-radius:14px}
+.setting-row+.setting-row{border-top:none}
+.setting-row:active{background:var(--panel2)}
+.sr-left{display:flex;flex-direction:column;gap:2px}
+.sr-title{font-size:13px;color:var(--text)}.sr-sub{font-size:11px;color:var(--text2)}
+.toggle{width:44px;height:26px;border-radius:13px;background:var(--panel2);border:1px solid var(--border);position:relative;transition:background .3s;cursor:pointer;flex-shrink:0}
+.toggle.on{background:var(--green2);border-color:var(--green2)}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.toggle.on::after{transform:translateX(-18px)}
+.vib-row{display:flex;gap:5px;flex-wrap:wrap}
+.vib-btn{padding:5px 10px;border-radius:9px;border:1px solid var(--border);background:var(--panel2);font-size:11px;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Vazirmatn',sans-serif}
+.vib-btn.active{border-color:var(--accent);color:var(--accent2);background:rgba(var(--glow-rgb),.1)}
+
+/* THEME SWATCHES */
+.theme-grid{display:flex;gap:10px;flex-wrap:wrap}
+.theme-swatch{width:44px;height:44px;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:all .25s;position:relative;display:flex;align-items:center;justify-content:center}
+.theme-swatch.active{border-color:#fff;transform:scale(1.1);box-shadow:0 0 12px rgba(255,255,255,.2)}
+.theme-swatch .ts-check{font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+
+/* GOALS PAGE */
+.goals-page{padding:14px}
+
+/* MILESTONE */
+.milestone{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .3s}
+.milestone.show{opacity:1;pointer-events:auto}
+.milestone-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px)}
+.milestone-card{position:relative;z-index:1;background:linear-gradient(135deg,var(--panel2),var(--bg));border:1px solid var(--accent);border-radius:24px;padding:28px 36px;text-align:center;box-shadow:0 0 80px var(--accentglow),0 20px 60px rgba(0,0,0,.6);animation:msIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes msIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.ms-emoji{font-size:44px;margin-bottom:6px}
+.ms-num{font-family:'Amiri',serif;font-size:52px;color:var(--accent2);line-height:1;text-shadow:0 0 30px var(--accentglow);font-weight:700}
+.ms-label{font-size:13px;color:var(--text2);margin-top:4px}
+.ms-sub{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.6}
+.ms-close{margin-top:18px;padding:10px 30px;border-radius:12px;border:1px solid var(--accent);background:rgba(var(--glow-rgb),.1);color:var(--accent2);font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-sheet{background:var(--panel);border-radius:24px 24px 0 0;border:1px solid var(--border);border-bottom:none;padding:22px 18px calc(22px + var(--safe-bottom));width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.modal-overlay.show .modal-sheet{transform:translateY(0)}
+.modal-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px}
+.modal-input{width:100%;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:15px;font-family:'Amiri',serif;outline:none;margin-bottom:8px;text-align:right}
+.modal-input.latin{font-family:'Vazirmatn',sans-serif;font-size:13px}
+.modal-input:focus{border-color:var(--accent)}
+.modal-input::placeholder{color:var(--text3)}
+.modal-btns{display:flex;gap:8px;margin-top:4px}
+.modal-btn{flex:1;padding:13px;border-radius:12px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all .2s}
+.modal-btn.cancel{background:var(--panel2);border:1px solid var(--border);color:var(--text2)}
+.modal-btn.confirm{background:rgba(var(--glow-rgb),.15);border:1px solid var(--accent);color:var(--accent2)}
+
+/* PARTICLES */
+.particle{position:fixed;width:5px;height:5px;border-radius:50%;pointer-events:none;z-index:100;animation:pfly .9s ease forwards}
+@keyframes pfly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}
+.pulse-anim{animation:bpulse .15s ease}
+@keyframes bpulse{0%,100%{transform:scale(1)}50%{transform:scale(.96)}}
+.num-pop{animation:npop .18s ease}
+@keyframes npop{0%,100%{transform:scale(1)}40%{transform:scale(1.15)}}
+</style>
+</head>
+<body>
+<div class="bg-layer" id="bgLayer"></div>
+
+<nav class="top-nav">
+  <div class="hamburger" onclick="openDrawer()">
+    <div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div>
+  </div>
+  <div class="app-name">تسبیح‌دان ✦</div>
+  <div class="nav-right"></div>
+</nav>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay">
+  <div class="drawer-bg" onclick="closeDrawer()"></div>
+  <div class="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo">تسبیح‌دان ✦</div>
+      <div class="drawer-sub">صلوات‌شمار هوشمند</div>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-item active-page" id="di-counter" onclick="navTo('counter')"><div class="di-icon">📿</div><div><div class="di-text">شمارش</div><div class="di-sub">شمارنده اصلی</div></div></div>
+      <div class="drawer-item" id="di-zekrs" onclick="navTo('zekrs')"><div class="di-icon">📖</div><div><div class="di-text">اذکار</div><div class="di-sub">انتخاب ذکر</div></div></div>
+      <div class="drawer-item" id="di-goals" onclick="navTo('goals')"><div class="di-icon">🎯</div><div><div class="di-text">اهداف</div><div class="di-sub">تنظیم اهداف سفارشی</div></div></div>
+      <div class="drawer-item" id="di-stats" onclick="navTo('stats')"><div class="di-icon">📊</div><div><div class="di-text">آمار</div><div class="di-sub">گزارش فعالیت</div></div></div>
+      <div class="drawer-sep"></div>
+      <div class="drawer-item" id="di-settings" onclick="navTo('settings')"><div class="di-icon">⚙️</div><div><div class="di-text">تنظیمات</div><div class="di-sub">صدا، لرزش، تم</div></div></div>
+      <div class="drawer-item" onclick="shareStats()"><div class="di-icon">📤</div><div><div class="di-text">اشتراک‌گذاری</div><div class="di-sub">ارسال آمار</div></div></div>
+    </div>
+    <div class="drawer-footer"><div class="drawer-footer-txt">اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَآلِ مُحَمَّدٍ<br>نسخه ۳.۱</div></div>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="pages">
+
+  <!-- COUNTER -->
+  <div class="page active" id="page-counter">
+    <div class="zekr-selector" id="zekrChips"></div>
+    <div class="zekr-display">
+      <div class="zekr-arabic" id="zekrArabic"></div>
+      <div class="zekr-persian" id="zekrPersian"></div>
+    </div>
+    <div class="ornament"><div class="ornament-line" style="--dir:right"></div><div class="ornament-diamond"></div><div class="ornament-line" style="--dir:left"></div></div>
+    <div class="ring-area">
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 220 220">
+          <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--accent3)"/>
+            <stop offset="50%" stop-color="var(--accent)"/>
+            <stop offset="100%" stop-color="var(--accent2)"/>
+          </linearGradient></defs>
+          <circle class="ring-track" cx="110" cy="110" r="105"/>
+          <circle class="ring-glow" id="ringGlow" cx="110" cy="110" r="105"/>
+          <circle class="ring-main" id="ringMain" cx="110" cy="110" r="105"/>
+        </svg>
+        <div class="tap-btn" id="tapBtn" onclick="doCount(event)">
+          <div class="tap-goalname" id="tapGoalName"></div>
+          <div class="tap-num" id="tapNum">۰</div>
+          <div class="tap-hint">لمس کنید</div>
+          <div class="tap-round" id="tapRound"></div>
+        </div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label"><span id="progressPct">۰٪</span><span id="progressFrac">۰ / ۱۰۰</span></div>
+    </div>
+    <!-- 3 stats — no جلسه -->
+    <div class="stats-strip">
+      <div class="stat-box"><div class="stat-v" id="s-today">۰</div><div class="stat-l">امروز</div></div>
+      <div class="stat-box"><div class="stat-v" id="s-rounds">۰</div><div class="stat-l">دور</div></div>
+      <div class="stat-box"><div class="stat-v" id="s-total">۰</div><div class="stat-l">کل</div></div>
+    </div>
+    <div class="goal-row-wrap">
+      <div class="goal-row-label"><span>هدف فعال:</span><span class="goal-add-btn" onclick="navTo('goals')">مدیریت اهداف ›</span></div>
+      <div class="goal-chips" id="goalChips"></div>
+    </div>
+    <div class="btn-row">
+      <button class="ctrl-btn" onclick="undoOne()">↩ برگشت</button>
+      <button class="ctrl-btn" onclick="resetRound()">↺ ریست دور</button>
+      <button class="ctrl-btn danger" onclick="resetAll()">🗑 همه</button>
+    </div>
+  </div>
+
+  <!-- ZEKRS -->
+  <div class="page" id="page-zekrs"><div class="zekrs-page" id="zekrsPage"></div></div>
+
+  <!-- GOALS -->
+  <div class="page" id="page-goals"><div class="goals-page settings-page" id="goalsPage"></div></div>
+
+  <!-- STATS -->
+  <div class="page" id="page-stats"><div class="stats-page" id="statsPage"></div></div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-settings"><div class="settings-page" id="settingsPage"></div></div>
+</div>
+
+<!-- MILESTONE -->
+<div class="milestone" id="milestoneOverlay">
+  <div class="milestone-bg" onclick="closeMilestone()"></div>
+  <div class="milestone-card">
+    <div class="ms-emoji" id="msEmoji">🏆</div>
+    <div class="ms-num" id="msNum">۱۰۰</div>
+    <div class="ms-label" id="msLabel">مبارک باد!</div>
+    <div class="ms-sub" id="msSub"></div>
+    <button class="ms-close" onclick="closeMilestone()">اَللّهُمَّ آمین ✦</button>
+  </div>
+</div>
+
+<!-- ZEKR MODAL -->
+<div class="modal-overlay" id="zekrModal">
+  <div class="modal-sheet">
+    <div class="modal-title">افزودن ذکر سفارشی</div>
+    <input class="modal-input" id="customArabic" placeholder="متن عربی ذکر" dir="rtl"/>
+    <input class="modal-input latin" id="customName" placeholder="نام ذکر (فارسی)" dir="rtl"/>
+    <input class="modal-input latin" id="customMeaning" placeholder="معنی (اختیاری)" dir="rtl"/>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModal('zekrModal')">انصراف</button>
+      <button class="modal-btn confirm" onclick="saveCustomZekr()">ذخیره</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal-sheet">
+    <div class="modal-title" id="goalModalTitle">افزودن هدف جدید</div>
+    <input class="modal-input latin" id="goalName" placeholder="نام هدف (مثل: صلوات روزانه)" dir="rtl"/>
+    <input class="modal-input latin" id="goalCount" placeholder="تعداد هدف (مثل: 100)" dir="ltr" type="number" inputmode="numeric"/>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModal('goalModal')">انصراف</button>
+      <button class="modal-btn confirm" onclick="saveGoal()">ذخیره</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════ ZEKRS — فقط ۷ ذکر ═══════════════════
+const ZEKRS = [
+  {
+    id:'salawat_faraj',
+    name:'صلوات فرج',
+    arabic:'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَآلِ مُحَمَّدٍ وَعَجِّلْ فَرَجَهُمْ',
+    persian:'خدایا بر محمد و آل محمد درود فرست و فرجشان را تعجیل کن',
+    virtue:'دعا برای تعجیل ظهور امام زمان (عج) همراه با صلوات.'
+  },
+  {
+    id:'sobhan',
+    name:'سبحان‌الله',
+    arabic:'سُبْحَانَ اللَّهِ',
+    persian:'پاک و منزه است خداوند',
+    virtue:'محبوب‌ترین کلمه نزد خداوند؛ ترازوی اعمال را سنگین می‌کند.'
+  },
+  {
+    id:'hamd',
+    name:'الحمدلله',
+    arabic:'الْحَمْدُ لِلَّهِ',
+    persian:'ستایش از آنِ خداوند است',
+    virtue:'«الحمدلله» ترازوی اعمال نیک را پر می‌کند.'
+  },
+  {
+    id:'takbir',
+    name:'الله‌اکبر',
+    arabic:'اللَّهُ أَكْبَرُ',
+    persian:'خداوند بزرگ‌تر از همه چیز است',
+    virtue:'بهترین ذکر برای بالا بردن درجات بهشتی.'
+  },
+  {
+    id:'tahlil',
+    name:'لا اله الا الله',
+    arabic:'لَا إِلَهَ إِلَّا اللَّهُ',
+    persian:'هیچ معبودی جز الله نیست',
+    virtue:'برترین ذکر؛ هفتاد هزار حسنه می‌نویسد.'
+  },
+  {
+    id:'astaghfar',
+    name:'استغفار',
+    arabic:'أَسْتَغْفِرُ اللَّهَ رَبِّي وَأَتُوبُ إِلَيْهِ',
+    persian:'از خدا — پروردگارم — آمرزش می‌طلبم و توبه می‌کنم',
+    virtue:'گناهان را می‌زداید، روزی را گشاد و غم را برطرف می‌کند.'
+  },
+  {
+    id:'tasbih_fatima',
+    name:'تسبیح فاطمه',
+    arabic:'سُبْحَانَ اللَّهِ ۳۴ بار — الْحَمْدُ لِلَّهِ ۳۳ بار — اللَّهُ أَكْبَرُ ۳۳ بار',
+    persian:'۳۴ سبحان‌الله + ۳۳ الحمدلله + ۳۳ الله‌اکبر',
+    virtue:'تسبیح حضرت زهرا (س)؛ بهتر از هزار رکعت نماز است.'
+  },
+];
+
+// ═══════════════════ THEMES ═══════════════════
+const THEMES = {
+  gold: {
+    name:'طلایی', emoji:'🟡',
+    bg:'#07090f', surface:'#0e1119', panel:'#131824', panel2:'#192030',
+    border:'rgba(180,150,80,0.12)',
+    accent:'#c9a84c', accent2:'#e8d08a', accent3:'#8a6020',
+    accentglow:'rgba(201,168,76,0.25)', glowRgb:'201,168,76',
+    text:'#f0e6c8', text2:'#a09070', text3:'#50453a',
+    swatchBg:'linear-gradient(135deg,#c9a84c,#8a6020)'
+  },
+  emerald: {
+    name:'فیروزه‌ای', emoji:'🟢',
+    bg:'#060f0a', surface:'#0a1610', panel:'#0f1e14', panel2:'#16291c',
+    border:'rgba(60,160,100,0.15)',
+    accent:'#3ca870', accent2:'#7adaa8', accent3:'#1e6040',
+    accentglow:'rgba(60,168,112,0.25)', glowRgb:'60,168,112',
+    text:'#d0f0e0', text2:'#70a080', text3:'#305040',
+    swatchBg:'linear-gradient(135deg,#3ca870,#1e6040)'
+  },
+  sapphire: {
+    name:'یاقوتی', emoji:'🔵',
+    bg:'#060810', surface:'#0a0e1a', panel:'#0f1525', panel2:'#162030',
+    border:'rgba(60,100,200,0.15)',
+    accent:'#5080e0', accent2:'#90b0ff', accent3:'#2040a0',
+    accentglow:'rgba(80,128,224,0.25)', glowRgb:'80,128,224',
+    text:'#d0d8f8', text2:'#7080b0', text3:'#304060',
+    swatchBg:'linear-gradient(135deg,#5080e0,#2040a0)'
+  },
+  ruby: {
+    name:'یشمی', emoji:'🔴',
+    bg:'#0f0608', surface:'#180a0c', panel:'#200d10', panel2:'#2a1015',
+    border:'rgba(180,50,70,0.15)',
+    accent:'#d04060', accent2:'#f080a0', accent3:'#801828',
+    accentglow:'rgba(208,64,96,0.25)', glowRgb:'208,64,96',
+    text:'#f8d0d8', text2:'#b07080', text3:'#604050',
+    swatchBg:'linear-gradient(135deg,#d04060,#801828)'
+  },
+  silver: {
+    name:'نقره‌ای', emoji:'⚪',
+    bg:'#090a0c', surface:'#111318', panel:'#181b22', panel2:'#20232c',
+    border:'rgba(160,160,180,0.12)',
+    accent:'#a0a8c0', accent2:'#d0d8f0', accent3:'#505870',
+    accentglow:'rgba(160,168,192,0.2)', glowRgb:'160,168,192',
+    text:'#e8eaf4', text2:'#8890a8', text3:'#485060',
+    swatchBg:'linear-gradient(135deg,#a0a8c0,#505870)'
+  },
+  purple: {
+    name:'بنفش', emoji:'🟣',
+    bg:'#080610', surface:'#100d1a', panel:'#170f25', panel2:'#1e1430',
+    border:'rgba(120,70,200,0.15)',
+    accent:'#9060d0', accent2:'#c090ff', accent3:'#502090',
+    accentglow:'rgba(144,96,208,0.25)', glowRgb:'144,96,208',
+    text:'#e8d8f8', text2:'#9070c0', text3:'#503870',
+    swatchBg:'linear-gradient(135deg,#9060d0,#502090)'
+  },
+};
+
+// ═══════════════════ STATE ═══════════════════
+let S = loadState();
+let editingGoalId = null;
+
+function loadState() {
+  try { const r = localStorage.getItem('tbd_v4'); if(r) return JSON.parse(r); } catch(e){}
+  return {
+    count:0, rounds:0, activeGoalId:'g_default',
+    currentZekr:'salawat_faraj', customZekrs:[],
+    goals:[
+      {id:'g_default', name:'هدف روزانه', count:100},
+      {id:'g_salawat', name:'صلوات', count:313},
+      {id:'g_tasbeeh', name:'تسبیح', count:33},
+    ],
+    history:{}, totalAllTime:0,
+    theme:'gold',
+    settings:{vibration:'medium', sound:false, keepScreen:false}
+  };
+}
+function saveState(){ localStorage.setItem('tbd_v4', JSON.stringify(S)); }
+const today = () => new Date().toISOString().slice(0,10);
+const todayCount = () => S.history[today()] || 0;
+function p(n){ return String(Math.round(n)).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]); }
+function getAllZekrs(){ return [...ZEKRS, ...S.customZekrs]; }
+function getCurrentZekr(){ return getAllZekrs().find(z=>z.id===S.currentZekr)||ZEKRS[0]; }
+function getActiveGoal(){ return S.goals.find(g=>g.id===S.activeGoalId)||S.goals[0]||{id:'d',name:'هدف',count:100}; }
+
+// ═══════════════════ THEME ═══════════════════
+function applyTheme(name) {
+  const t = THEMES[name] || THEMES.gold;
+  S.theme = name;
+  const r = document.documentElement.style;
+  r.setProperty('--bg', t.bg);
+  r.setProperty('--surface', t.surface);
+  r.setProperty('--panel', t.panel);
+  r.setProperty('--panel2', t.panel2);
+  r.setProperty('--border', t.border);
+  r.setProperty('--accent', t.accent);
+  r.setProperty('--accent2', t.accent2);
+  r.setProperty('--accent3', t.accent3);
+  r.setProperty('--accentglow', t.accentglow);
+  r.setProperty('--glow-rgb', t.glowRgb);
+  r.setProperty('--text', t.text);
+  r.setProperty('--text2', t.text2);
+  r.setProperty('--text3', t.text3);
+  // update gold/gold2/gold3 aliases used in some places
+  r.setProperty('--gold', t.accent);
+  r.setProperty('--gold2', t.accent2);
+  r.setProperty('--gold3', t.accent3);
+  r.setProperty('--goldglow', t.accentglow);
+}
+
+// ═══════════════════ STARS ═══════════════════
+(function(){
+  const el=document.getElementById('bgLayer');
+  for(let i=0;i<40;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*2+1;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*6}s;--op:${0.1+Math.random()*0.3}`;
+    el.appendChild(s);
+  }
+})();
+
+// ═══════════════════ DRAWER ═══════════════════
+function openDrawer(){ document.getElementById('drawerOverlay').classList.add('open'); }
+function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('open'); }
+function navTo(name){
+  closeDrawer();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.drawer-item[id^="di-"]').forEach(d=>d.classList.remove('active-page'));
+  const di=document.getElementById('di-'+name); if(di) di.classList.add('active-page');
+  if(name==='stats') renderStats();
+  if(name==='zekrs') renderZekrs();
+  if(name==='goals') renderGoals();
+  if(name==='settings') renderSettings();
+}
+
+// ═══════════════════ ZEKR CHIPS ═══════════════════
+function renderZekrChips(){
+  document.getElementById('zekrChips').innerHTML = getAllZekrs().map(z=>
+    `<div class="zekr-chip ${z.id===S.currentZekr?'active':''}" onclick="selectZekr('${z.id}')">${z.name}</div>`
+  ).join('');
+}
+function selectZekr(id){
+  S.currentZekr=id; saveState(); renderZekrChips();
+  const z=getCurrentZekr();
+  document.getElementById('zekrArabic').textContent=z.arabic;
+  document.getElementById('zekrPersian').textContent=z.persian||'';
+}
+
+// ═══════════════════ GOAL CHIPS ═══════════════════
+function renderGoalChips(){
+  document.getElementById('goalChips').innerHTML = S.goals.map(g=>
+    `<div class="g-chip ${g.id===S.activeGoalId?'active':''}" onclick="setActiveGoal('${g.id}')">
+      <div class="g-chip-name">${g.name}</div>
+      <div class="g-chip-num">${p(g.count)}</div>
+    </div>`
+  ).join('');
+}
+function setActiveGoal(id){
+  S.activeGoalId=id; S.count=0; S.rounds=0;
+  saveState(); renderGoalChips(); updateCounter();
+}
+
+// ═══════════════════ COUNTER ═══════════════════
+const CIRC = 2*Math.PI*105;
+function updateCounter(){
+  const goal=getActiveGoal();
+  const pct=Math.min(S.count/goal.count,1);
+  const offset=CIRC*(1-pct);
+  document.getElementById('ringMain').style.strokeDashoffset=offset;
+  document.getElementById('ringGlow').style.strokeDashoffset=offset;
+  document.getElementById('tapNum').textContent=p(S.count);
+  document.getElementById('tapRound').textContent=S.rounds>0?`دور ${p(S.rounds)}`:'';
+  document.getElementById('tapGoalName').textContent=goal.name;
+  document.getElementById('progressFill').style.width=(pct*100)+'%';
+  document.getElementById('progressPct').textContent=p(Math.round(pct*100))+'٪';
+  document.getElementById('progressFrac').textContent=p(S.count)+' / '+p(goal.count);
+  document.getElementById('s-today').textContent=p(todayCount());
+  document.getElementById('s-rounds').textContent=p(S.rounds);
+  document.getElementById('s-total').textContent=p(S.totalAllTime);
+}
+
+// ═══════════════════ SOUND / VIB ═══════════════════
+let actx=null;
+function playClick(){
+  if(!S.settings.sound) return;
+  try{
+    if(!actx) actx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.connect(g);g.connect(actx.destination);
+    o.frequency.value=900;g.gain.setValueAtTime(0.12,actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+0.07);
+    o.start();o.stop(actx.currentTime+0.07);
+  }catch(e){}
+}
+function vibrate(type){
+  if(!navigator.vibrate) return;
+  const v=S.settings.vibration; if(v==='off') return;
+  const pat=v==='light'?8:v==='medium'?15:30;
+  navigator.vibrate(type==='milestone'?[50,30,80,30,50]:pat);
+}
+function spawnParticles(x,y,n=8){
+  const t=THEMES[S.theme]||THEMES.gold;
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='particle';
+    const ang=(Math.PI*2*i/n)+Math.random()*.8,dist=40+Math.random()*80;
+    el.style.cssText=`left:${x}px;top:${y}px;--tx:${Math.cos(ang)*dist}px;--ty:${Math.sin(ang)*dist}px;background:${t.accent}`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+  }
+}
+
+// ═══════════════════ COUNTING ═══════════════════
+function doCount(ev){
+  const goal=getActiveGoal();
+  S.count++;S.totalAllTime++;
+  S.history[today()]=(S.history[today()]||0)+1;
+  const btn=document.getElementById('tapBtn');
+  btn.classList.remove('pulse-anim');void btn.offsetWidth;btn.classList.add('pulse-anim');
+  const numEl=document.getElementById('tapNum');
+  numEl.classList.remove('num-pop');void numEl.offsetWidth;numEl.classList.add('num-pop');
+  playClick();vibrate('tap');
+  if(S.count%10===0&&ev){const r=btn.getBoundingClientRect();spawnParticles(r.left+r.width/2,r.top+r.height/2,S.count%50===0?16:8);}
+  if(S.count>=goal.count){
+    S.rounds++;S.count=0;vibrate('milestone');
+    showMilestone(S.rounds*goal.count,'round',goal.name);
+  } else {
+    const ms=[33,100,313,500,1000,3000];
+    if(ms.includes(S.totalAllTime)){vibrate('milestone');showMilestone(S.totalAllTime,'total','');}
+  }
+  saveState();updateCounter();
+}
+function undoOne(){
+  const goal=getActiveGoal();
+  if(S.count>0){S.count--;S.totalAllTime=Math.max(0,S.totalAllTime-1);S.history[today()]=Math.max(0,(S.history[today()]||0)-1);}
+  else if(S.rounds>0){S.rounds--;S.count=goal.count-1;S.totalAllTime=Math.max(0,S.totalAllTime-1);}
+  saveState();updateCounter();
+}
+function resetRound(){S.count=0;saveState();updateCounter();}
+function resetAll(){if(!confirm('ریست جلسه جاری؟'))return;S.count=0;S.rounds=0;saveState();updateCounter();}
+
+// ═══════════════════ MILESTONE ═══════════════════
+const MS_MSGS={
+  round:['آفرین! دور کامل شد 🌟','ماشاءالله! ادامه بده 💫','عالی! خداوند قبول فرماید ✨'],
+  total:['به عدد مبارک رسیدی ✨','اَحسنت! خداوند اجر دهد 🌙','درودت باد! 💛']
+};
+function showMilestone(num,type,name){
+  document.getElementById('msNum').textContent=p(num);
+  document.getElementById('msEmoji').textContent=type==='round'?'🏆':'⭐';
+  document.getElementById('msLabel').textContent=(name||getCurrentZekr().name)+' — مبارک باد!';
+  document.getElementById('msSub').textContent=MS_MSGS[type][Math.floor(Math.random()*3)];
+  document.getElementById('milestoneOverlay').classList.add('show');
+}
+function closeMilestone(){document.getElementById('milestoneOverlay').classList.remove('show');}
+
+// ═══════════════════ GOALS ═══════════════════
+function renderGoals(){
+  document.getElementById('goalsPage').innerHTML=`
+    <div class="setting-group">
+      <div class="setting-group-title">اهداف من</div>
+      ${S.goals.map(g=>`
+        <div class="setting-row">
+          <div class="sr-left">
+            <div class="sr-title">${g.name}</div>
+            <div class="sr-sub">${p(g.count)} ذکر در هر دور</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            ${g.id===S.activeGoalId
+              ? '<span style="font-size:10px;color:var(--accent);padding:3px 8px;border:1px solid var(--border);border-radius:8px">فعال ✓</span>'
+              : `<span style="font-size:11px;color:var(--text2);cursor:pointer;padding:3px 8px;border:1px solid var(--border);border-radius:8px;background:var(--panel2)" onclick="setActiveGoal('${g.id}');renderGoals()">انتخاب</span>`}
+            <span style="font-size:16px;cursor:pointer" onclick="editGoal('${g.id}')">✏️</span>
+            <span style="font-size:16px;cursor:pointer" onclick="deleteGoal('${g.id}')">🗑</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button onclick="openGoalModal()" style="width:100%;padding:14px;border-radius:14px;border:1px dashed var(--border);background:transparent;color:var(--text2);font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;margin-top:4px">+ افزودن هدف جدید</button>
+    <div style="margin-top:16px;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:14px">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:5px">💡 راهنما</div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.9">هر هدف یک نام و تعداد دارد.<br>با رسیدن به تعداد هدف، دور کامل می‌شود.<br>هدف فعال در صفحه شمارش نشان داده می‌شود.</div>
+    </div>
+  `;
+}
+function openGoalModal(edit){
+  editingGoalId=edit||null;
+  if(edit){
+    const g=S.goals.find(x=>x.id===edit); if(!g) return;
+    document.getElementById('goalModalTitle').textContent='ویرایش هدف';
+    document.getElementById('goalName').value=g.name;
+    document.getElementById('goalCount').value=g.count;
+  } else {
+    document.getElementById('goalModalTitle').textContent='افزودن هدف جدید';
+    document.getElementById('goalName').value='';
+    document.getElementById('goalCount').value='';
+  }
+  document.getElementById('goalModal').classList.add('show');
+  setTimeout(()=>document.getElementById('goalName').focus(),300);
+}
+function editGoal(id){openGoalModal(id);}
+function deleteGoal(id){
+  if(S.goals.length<=1){alert('حداقل یک هدف باید باشد');return;}
+  if(!confirm('این هدف حذف شود؟'))return;
+  S.goals=S.goals.filter(g=>g.id!==id);
+  if(S.activeGoalId===id) S.activeGoalId=S.goals[0].id;
+  saveState();renderGoals();renderGoalChips();updateCounter();
+}
+function saveGoal(){
+  const name=document.getElementById('goalName').value.trim();
+  const count=parseInt(document.getElementById('goalCount').value);
+  if(!name) return alert('نام هدف را وارد کنید');
+  if(!count||count<1) return alert('تعداد باید عدد مثبت باشد');
+  if(editingGoalId){const g=S.goals.find(x=>x.id===editingGoalId);if(g){g.name=name;g.count=count;}}
+  else S.goals.push({id:'g_'+Date.now(),name,count});
+  saveState();closeModal('goalModal');renderGoals();renderGoalChips();updateCounter();
+}
+
+// ═══════════════════ ZEKRS PAGE ═══════════════════
+function renderZekrs(){
+  document.getElementById('zekrsPage').innerHTML=`
+    <div style="padding:14px">
+      <div class="section-title" style="margin-bottom:10px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px">اذکار<span style="flex:1;height:1px;background:var(--border);display:block"></span></div>
+      ${getAllZekrs().map(z=>`
+        <div class="zekr-card ${z.id===S.currentZekr?'selected':''}" onclick="selectZekrAndGo('${z.id}')">
+          <div class="zc-arabic">${z.arabic}</div>
+          <div class="zc-name">${z.name}</div>
+          ${z.persian?`<div class="zc-meaning">${z.persian}</div>`:''}
+          ${z.virtue?`<div class="zc-virtue">📖 ${z.virtue}</div>`:''}
+          ${z.id===S.currentZekr?'<div class="zc-badge">✓ انتخاب شده</div>':''}
+        </div>
+      `).join('')}
+      <div class="add-custom-card" onclick="document.getElementById('zekrModal').classList.add('show');setTimeout(()=>document.getElementById('customArabic').focus(),300)">+ افزودن ذکر سفارشی</div>
+    </div>
+  `;
+}
+function selectZekrAndGo(id){selectZekr(id);renderZekrs();navTo('counter');}
+
+// ═══════════════════ MODALS ═══════════════════
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function saveCustomZekr(){
+  const arabic=document.getElementById('customArabic').value.trim();
+  const name=document.getElementById('customName').value.trim();
+  const meaning=document.getElementById('customMeaning').value.trim();
+  if(!arabic||!name) return alert('لطفاً متن و نام ذکر را وارد کنید');
+  S.customZekrs.push({id:'cz_'+Date.now(),name,arabic,persian:meaning,virtue:''});
+  saveState();closeModal('zekrModal');renderZekrChips();renderZekrs();
+  ['customArabic','customName','customMeaning'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ═══════════════════ STATS ═══════════════════
+function renderStats(){
+  const hist=S.history,dates=Object.keys(hist).sort();
+  const thisWeek=(()=>{let s=0,d=new Date();for(let i=0;i<7;i++){const k=new Date(d-i*86400000).toISOString().slice(0,10);s+=hist[k]||0;}return s;})();
+  const thisMonth=(()=>{const px=today().slice(0,7);return Object.keys(hist).filter(k=>k.startsWith(px)).reduce((s,k)=>s+hist[k],0);})();
+  const bestDay=dates.reduce((b,d)=>hist[d]>(hist[b]||0)?d:b,dates[0]||today());
+  const streak=(()=>{let s=0,d=new Date();while(true){const k=d.toISOString().slice(0,10);if(hist[k]>0){s++;d.setDate(d.getDate()-1);}else break;}return s;})();
+  const last7=[];const dn=['ش','ی','د','س','چ','پ','ج'];
+  for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*86400000);last7.push({key:d.toISOString().slice(0,10),label:dn[d.getDay()],count:hist[d.toISOString().slice(0,10)]||0});}
+  const maxBar=Math.max(...last7.map(d=>d.count),1);
+  const heatCells=[];
+  for(let i=34;i>=0;i--){const d=new Date(Date.now()-i*86400000);const k=d.toISOString().slice(0,10);const cnt=hist[k]||0;heatCells.push(cnt===0?0:cnt<50?1:cnt<150?2:cnt<300?3:4);}
+  document.getElementById('statsPage').innerHTML=`
+    <div class="section-title">خلاصه کلی</div>
+    <div class="stat-cards">
+      <div class="stat-card"><div class="sc-val">${p(S.totalAllTime)}</div><div class="sc-label">مجموع کل</div></div>
+      <div class="stat-card"><div class="sc-val">${p(todayCount())}</div><div class="sc-label">امروز</div></div>
+      <div class="stat-card"><div class="sc-val">${p(thisWeek)}</div><div class="sc-label">این هفته</div></div>
+      <div class="stat-card"><div class="sc-val">${p(thisMonth)}</div><div class="sc-label">این ماه</div></div>
+    </div>
+    <div class="streak-box">
+      <div><div class="streak-num">${p(streak)} روز</div><div class="streak-label">پشت سر هم — ${streak>0?'آفرین! 💪':'امروز شروع کن!'}</div><div class="sc-sub" style="margin-top:3px">بهترین روز: ${bestDay?p(hist[bestDay])+' ذکر':'—'}</div></div>
+      <div class="streak-flame">${streak>=7?'🔥':streak>=3?'✨':'🌱'}</div>
+    </div>
+    <div class="section-title">۷ روز گذشته</div>
+    <div class="chart-wrap">
+      <div class="bar-chart">${last7.map(d=>`<div class="bar-col"><div class="bar-fill ${d.key===today()?'today':''}" style="height:${Math.max(2,(d.count/maxBar)*68)}px">${d.count>0?`<div class="bar-val">${p(d.count)}</div>`:''}</div><div class="bar-lbl">${d.label}</div></div>`).join('')}</div>
+    </div>
+    <div class="section-title">تقویم فعالیت (۳۵ روز)</div>
+    <div class="chart-wrap">
+      <div class="heatmap">${heatCells.map(lv=>`<div class="hm-cell ${lv>0?'lv'+lv:''}"></div>`).join('')}</div>
+      <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end;margin-top:4px">
+        <span style="font-size:9px;color:var(--text3)">کمتر</span>
+        ${[0,1,2,3,4].map(l=>`<div style="width:12px;height:12px;border-radius:2px;background:${l===0?'var(--panel2)':['','rgba(var(--glow-rgb),.15)','rgba(var(--glow-rgb),.35)','rgba(var(--glow-rgb),.6)','var(--accent)'][l]}"></div>`).join('')}
+        <span style="font-size:9px;color:var(--text3)">بیشتر</span>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════ SETTINGS ═══════════════════
+function renderSettings(){
+  const st=S.settings;
+  const themeSwatches=Object.entries(THEMES).map(([key,t])=>`
+    <div class="theme-swatch ${S.theme===key?'active':''}" style="background:${t.swatchBg}" onclick="changeTheme('${key}');renderSettings()" title="${t.name}">
+      ${S.theme===key?'<span class="ts-check">✓</span>':''}
+    </div>
+  `).join('');
+  document.getElementById('settingsPage').innerHTML=`
+    <div class="setting-group">
+      <div class="setting-group-title">تم رنگی</div>
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px">تم انتخاب شده: <span style="color:var(--accent)">${THEMES[S.theme]?.name||'طلایی'}</span></div>
+        <div class="theme-grid">${themeSwatches}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+          ${Object.entries(THEMES).map(([key,t])=>`<span style="font-size:10px;color:${S.theme===key?'var(--accent)':'var(--text3)'}">${t.emoji} ${t.name}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">صدا و لرزش</div>
+      <div class="setting-row"><div class="sr-left"><div class="sr-title">صدای کلیک</div><div class="sr-sub">صدای دیجیتال هنگام شمارش</div></div><div class="toggle ${st.sound?'on':''}" onclick="toggleSetting('sound')"></div></div>
+      <div class="setting-row"><div class="sr-left"><div class="sr-title">لرزش</div><div class="sr-sub">شدت لرزش هنگام لمس</div></div><div class="vib-row">${['off','light','medium','strong'].map(v=>`<div class="vib-btn ${st.vibration===v?'active':''}" onclick="setVibration('${v}')">${{off:'خاموش',light:'کم',medium:'متوسط',strong:'زیاد'}[v]}</div>`).join('')}</div></div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">نمایش</div>
+      <div class="setting-row"><div class="sr-left"><div class="sr-title">نگه داشتن صفحه روشن</div><div class="sr-sub">مانع خاموش شدن صفحه شود</div></div><div class="toggle ${st.keepScreen?'on':''}" onclick="toggleSetting('keepScreen')"></div></div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">داده‌ها</div>
+      <div class="setting-row" onclick="exportData()"><div class="sr-left"><div class="sr-title">خروجی آمار (JSON)</div><div class="sr-sub">دانلود فایل پشتیبان</div></div><span style="color:var(--text2)">›</span></div>
+      <div class="setting-row" onclick="clearAllData()"><div class="sr-left"><div class="sr-title" style="color:#e06060">پاک کردن همه داده‌ها</div><div class="sr-sub">برگشت‌ناپذیر</div></div><span style="color:#e06060">›</span></div>
+    </div>
+    <div style="text-align:center;padding:20px 0 8px;color:var(--text3);font-size:11px;line-height:2">
+      تسبیح‌دان — نسخه ۳.۱<br>
+      <span style="color:var(--accent3)">اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَآلِ مُحَمَّدٍ</span><br>
+      <span style="font-size:12px;color:var(--text2);letter-spacing:.05em">ساخته شده توسط MHG</span>
+    </div>
+  `;
+}
+function changeTheme(name){applyTheme(name);saveState();}
+function toggleSetting(key){S.settings[key]=!S.settings[key];if(key==='keepScreen'&&S.settings.keepScreen&&navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});saveState();renderSettings();}
+function setVibration(v){S.settings.vibration=v;saveState();renderSettings();if(v!=='off')vibrate('tap');}
+function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='tasbihdaan-backup.json';a.click();}
+function clearAllData(){if(confirm('همه داده‌ها پاک شود؟')){localStorage.removeItem('tbd_v4');location.reload();}}
+
+// ═══════════════════ SHARE ═══════════════════
+function shareStats(){
+  closeDrawer();
+  const txt=`📿 آمار تسبیح‌دان:\n✦ کل: ${p(S.totalAllTime)} ذکر\n✦ امروز: ${p(todayCount())} ذکر\n\nاللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَآلِ مُحَمَّدٍ`;
+  if(navigator.share) navigator.share({title:'تسبیح‌دان',text:txt});
+  else navigator.clipboard?.writeText(txt).then(()=>alert('آمار کپی شد!'));
+}
+
+// ═══════════════════ INIT ═══════════════════
+function init(){
+  applyTheme(S.theme||'gold');
+  renderZekrChips(); selectZekr(S.currentZekr);
+  renderGoalChips(); updateCounter();
+  if(S.settings.keepScreen&&navigator.wakeLock) navigator.wakeLock.request('screen').catch(()=>{});
+}
+init();
+</script>
+</body>
+</html>
